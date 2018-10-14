@@ -10,8 +10,8 @@ inline double sign(double in) {
   if (in < 0) return -1.0;
   return 0.0;
 }
+static double beta = 1.0;
 inline double logistic(double in) {
-  constexpr double beta = 1.0;
   return 1.0 / (1 + std::exp(-1.0 * in * beta));
 }
 inline double hypertan(double in) { return std::tanh(in); }
