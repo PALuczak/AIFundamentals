@@ -1,8 +1,6 @@
 #include "perceptronwindow.h"
 #include "ui_perceptronwindow.h"
 
-#include <QValueAxis>
-
 PerceptronWindow::PerceptronWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::PerceptronWindow) {
   ui->setupUi(this);
@@ -28,7 +26,7 @@ PerceptronWindow::PerceptronWindow(QWidget* parent)
   ui->betaBox->setRange(-qInf(), qInf());
   ui->expectedBox->setValue(1.0);
   ui->expectedBox->setSingleStep(0.1);
-  ui->expectedBox->setRange(-qInf(), qInf());
+  ui->expectedBox->setRange(-1, 1);
   ui->learningRateBox->setValue(1);
   ui->learningRateBox->setSingleStep(0.1);
   ui->learningRateBox->setRange(-qInf(), qInf());
@@ -38,6 +36,28 @@ PerceptronWindow::PerceptronWindow(QWidget* parent)
   ui->epsilonBox->setValue(0.1);
   ui->epsilonBox->setSingleStep(0.01);
   ui->epsilonBox->setRange(0, qInf());
+
+  ui->networkLayerBox->setValue(0);
+  ui->networkLayerBox->setSingleStep(1);
+  ui->networkLayerBox->setRange(0, INT_MAX);
+  ui->networkNeuronBox->setValue(1);
+  ui->networkNeuronBox->setSingleStep(1);
+  ui->networkNeuronBox->setRange(1, INT_MAX);
+  ui->networkBetaBox->setValue(1.0);
+  ui->networkBetaBox->setSingleStep(0.1);
+  ui->networkBetaBox->setRange(-qInf(), qInf());
+  ui->networkThetaBox->setValue(1.0);
+  ui->networkThetaBox->setSingleStep(0.1);
+  ui->networkThetaBox->setRange(-qInf(), qInf());
+  ui->networkEtaBox->setValue(1.0);
+  ui->networkEtaBox->setSingleStep(0.1);
+  ui->networkEtaBox->setRange(-qInf(), qInf());
+  ui->networkEpsilonBox->setValue(0.1);
+  ui->networkEpsilonBox->setSingleStep(0.01);
+  ui->networkEpsilonBox->setRange(-qInf(), qInf());
+  ui->networkIterationsBox->setValue(99);
+  ui->networkIterationsBox->setSingleStep(1);
+  ui->networkIterationsBox->setRange(1, INT_MAX);
 }
 
 PerceptronWindow::~PerceptronWindow() {
@@ -60,14 +80,22 @@ QDoubleSpinBox* PerceptronWindow::createNumberCell() {
 }
 
 QDoubleSpinBox* PerceptronWindow::createInputCell() {
+  std::random_device r;
+  std::default_random_engine re(r());
+  std::uniform_real_distribution<double> uniform_dist(-1.0, 1.0);
   auto cell = createNumberCell();
   cell->setRange(-1.0, 1.0);
+  cell->setValue(uniform_dist(re));
   return cell;
 }
 
 QDoubleSpinBox* PerceptronWindow::createWeightCell() {
+  std::random_device r;
+  std::default_random_engine re(r());
+  std::uniform_real_distribution<double> uniform_dist(-2.0, 2.0);
   auto cell = createNumberCell();
   cell->setRange(-qInf(), qInf());
+  cell->setValue(uniform_dist(re));
   return cell;
 }
 
@@ -195,3 +223,57 @@ void PerceptronWindow::on_trainButton_clicked() {
         ->setValue(*weightIt++);
   }
 }
+
+void PerceptronWindow::on_networkInputAddRowButton_clicked() {
+  int rows = ui->networkInputTable->rowCount();
+  ui->networkInputTable->insertRow(rows);
+  ui->networkInputTable->setCellWidget(rows, 0, createInputCell());
+}
+
+void PerceptronWindow::on_networkInputRemoveRowButton_clicked() {
+  int rows = ui->networkInputTable->rowCount() - 1;
+  delete ui->networkInputTable->takeItem(rows, 0);
+  ui->networkInputTable->removeRow(rows);
+}
+
+std::vector<double> PerceptronWindow::getNetworkInputVector() {
+  int rows = ui->networkInputTable->rowCount();
+  std::vector<double> inputs;
+  inputs.reserve(static_cast<size_t>(rows + 1));
+  // QTableWidget does not allow for proper range based access
+  for (auto i = 0; i < rows; ++i) {
+    inputs.push_back(
+        dynamic_cast<QDoubleSpinBox*>(ui->networkInputTable->cellWidget(i, 0))
+            ->value());
+  }
+  return inputs;
+}
+
+void PerceptronWindow::on_networkOutputAddRowButton_clicked() {
+  int rows = ui->networkOutputTable->rowCount();
+  ui->networkOutputTable->insertRow(rows);
+  ui->networkOutputTable->setCellWidget(rows, 0, createInputCell());
+}
+
+void PerceptronWindow::on_networkOutputRemoveRowButton_clicked() {
+  int rows = ui->networkOutputTable->rowCount() - 1;
+  delete ui->networkOutputTable->takeItem(rows, 0);
+  ui->networkOutputTable->removeRow(rows);
+}
+
+std::vector<double> PerceptronWindow::getNetworkOutputVector() {
+  int rows = ui->networkOutputTable->rowCount();
+  std::vector<double> outputs;
+  outputs.reserve(static_cast<size_t>(rows + 1));
+  // QTableWidget does not allow for proper range based access
+  for (auto i = 0; i < rows; ++i) {
+    outputs.push_back(
+        dynamic_cast<QDoubleSpinBox*>(ui->networkOutputTable->cellWidget(i, 0))
+            ->value());
+  }
+  return outputs;
+}
+
+void PerceptronWindow::on_networkTrainButton_clicked() {}
+
+void PerceptronWindow::on_networkCalculateButton_clicked() {}

@@ -147,8 +147,8 @@
               <widget class="QComboBox" name="functionBox">
                <property name="minimumSize">
                 <size>
-                 <width>72</width>
-                 <height>22</height>
+                 <width>75</width>
+                 <height>23</height>
                 </size>
                </property>
               </widget>
@@ -164,7 +164,7 @@
               <widget class="QDoubleSpinBox" name="betaBox">
                <property name="minimumSize">
                 <size>
-                 <width>71</width>
+                 <width>75</width>
                  <height>23</height>
                 </size>
                </property>
@@ -347,6 +347,9 @@
                  <height>23</height>
                 </size>
                </property>
+               <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
                <property name="value">
                 <number>99</number>
                </property>
@@ -463,8 +466,8 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QGroupBox" name="networkInternediateGroup">
+        <item row="0" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QGroupBox" name="networkIntermediateGroup">
           <property name="minimumSize">
            <size>
             <width>280</width>
@@ -476,7 +479,14 @@
           </property>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
-            <widget class="QSpinBox" name="networkLayerBox"/>
+            <widget class="QSpinBox" name="networkLayerBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item row="0" column="1">
             <widget class="QLabel" name="layerCountLabel">
@@ -487,6 +497,12 @@
            </item>
            <item row="1" column="0">
             <widget class="QSpinBox" name="networkNeuronBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
              <property name="value">
               <number>1</number>
              </property>
@@ -502,7 +518,7 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="2">
+        <item row="2" column="2" alignment="Qt::AlignHCenter">
          <widget class="QGroupBox" name="networkTrainingGroup">
           <property name="minimumSize">
            <size>
@@ -516,6 +532,12 @@
           <layout class="QFormLayout" name="formLayout_2">
            <item row="0" column="0">
             <widget class="QDoubleSpinBox" name="networkEtaBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
              <property name="buttonSymbols">
               <enum>QAbstractSpinBox::NoButtons</enum>
              </property>
@@ -536,6 +558,15 @@
            </item>
            <item row="2" column="0">
             <widget class="QSpinBox" name="networkIterationsBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::NoButtons</enum>
+             </property>
              <property name="maximum">
               <number>1000</number>
              </property>
@@ -553,6 +584,12 @@
            </item>
            <item row="1" column="0">
             <widget class="QDoubleSpinBox" name="networkEpsilonBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
              <property name="buttonSymbols">
               <enum>QAbstractSpinBox::NoButtons</enum>
              </property>
@@ -656,7 +693,7 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="1" column="2" alignment="Qt::AlignHCenter">
          <widget class="QGroupBox" name="networkLogisticGroup">
           <property name="minimumSize">
            <size>
@@ -670,6 +707,12 @@
           <layout class="QFormLayout" name="formLayout_3">
            <item row="0" column="0">
             <widget class="QDoubleSpinBox" name="networkBetaBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
              <property name="buttonSymbols">
               <enum>QAbstractSpinBox::NoButtons</enum>
              </property>
@@ -683,6 +726,12 @@
            </item>
            <item row="1" column="0">
             <widget class="QDoubleSpinBox" name="networkThetaBox">
+             <property name="minimumSize">
+              <size>
+               <width>75</width>
+               <height>23</height>
+              </size>
+             </property>
              <property name="buttonSymbols">
               <enum>QAbstractSpinBox::NoButtons</enum>
              </property>
@@ -711,7 +760,7 @@
           </layout>
          </widget>
         </item>
-        <item row="3" column="2" rowspan="2">
+        <item row="3" column="2" rowspan="2" alignment="Qt::AlignHCenter">
          <widget class="QGroupBox" name="networkTestingGroup">
           <property name="minimumSize">
            <size>
