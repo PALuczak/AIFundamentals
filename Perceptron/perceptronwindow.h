@@ -7,8 +7,11 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <algorithm>
+#include <climits>
 #include <functional>
-#include "perceptron.h"
+#include <string>
+#include <tuple>
+#include "neuron.h"
 
 namespace Ui {
 class PerceptronWindow;
@@ -31,16 +34,19 @@ class PerceptronWindow : public QMainWindow {
 
   void on_thetaBox_valueChanged(double arg1);
 
+  void on_trainButton_clicked();
+
  private:
   Ui::PerceptronWindow *ui;
   QDoubleSpinBox *createNumberCell();
   QDoubleSpinBox *createInputCell();
   QDoubleSpinBox *createWeightCell();
   QMap<QString, std::function<double(double)>> perceptronFunctions;
-  QtCharts::QChart *chart;
-  QtCharts::QChartView *view;
-  const double plotOffset = 5;
-  const size_t plotPoints = 1000;
+  QtCharts::QChart *sigmoidChart;
+  const double sigmoidPlotOffset = 5;
+  const size_t sigmoidPlotPoints = 1000;
+  std::tuple<std::vector<double>, std::vector<double>> getInputVectors();
+  void addTrainingPoint(double value);
 };
 
 #endif  // PERCEPTRONWINDOW_H

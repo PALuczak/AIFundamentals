@@ -33,7 +33,7 @@ SOURCES += \
 
 HEADERS += \
         perceptronwindow.h \
-    perceptron.h
+        neuron.h
 
 FORMS += \
         perceptronwindow.ui
