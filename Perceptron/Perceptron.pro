@@ -29,11 +29,13 @@ CONFIG += c++14
 
 SOURCES += \
         main.cpp \
-        perceptronwindow.cpp
+        perceptronwindow.cpp \
+    network.cpp
 
 HEADERS += \
         perceptronwindow.h \
-        neuron.h
+        neuron.h \
+    network.h
 
 FORMS += \
         perceptronwindow.ui

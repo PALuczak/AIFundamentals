@@ -13,6 +13,7 @@
 #include <random>
 #include <string>
 #include <tuple>
+#include "network.h"
 #include "neuron.h"
 
 namespace Ui {
@@ -24,6 +25,8 @@ class PerceptronWindow : public QMainWindow {
  public:
   explicit PerceptronWindow(QWidget *parent = nullptr);
   ~PerceptronWindow();
+
+  void enableNetwork();
 
  private slots:
   void on_addRowButton_clicked();
@@ -50,19 +53,32 @@ class PerceptronWindow : public QMainWindow {
 
   void on_networkCalculateButton_clicked();
 
+  void on_networkCreateButton_clicked();
+
+  void on_networkLayerBox_valueChanged(int arg1);
+
+  void on_networkNeuronBox_valueChanged(int arg1);
+
+  void on_networkBetaBox_valueChanged(double arg1);
+
+  void on_networkThetaBox_valueChanged(double arg1);
+
  private:
   Ui::PerceptronWindow *ui;
+  QtCharts::QChart *sigmoidChart;
+  const double sigmoidPlotOffset{5};
+  const size_t sigmoidPlotPoints{1000};
+  std::unique_ptr<NeuralNetwork::NeuralNetwork> network{nullptr};
+
   QDoubleSpinBox *createNumberCell();
   QDoubleSpinBox *createInputCell();
   QDoubleSpinBox *createWeightCell();
   QMap<QString, std::function<double(double)>> perceptronFunctions;
-  QtCharts::QChart *sigmoidChart;
-  const double sigmoidPlotOffset = 5;
-  const size_t sigmoidPlotPoints = 1000;
   std::tuple<std::vector<double>, std::vector<double>> getInputVectors();
   void addTrainingPoint(double value);
   std::vector<double> getNetworkInputVector();
   std::vector<double> getNetworkOutputVector();
+  void disableNetwork();
 };
 
 #endif  // PERCEPTRONWINDOW_H

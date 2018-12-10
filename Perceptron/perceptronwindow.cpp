@@ -46,7 +46,7 @@ PerceptronWindow::PerceptronWindow(QWidget* parent)
   ui->networkBetaBox->setValue(1.0);
   ui->networkBetaBox->setSingleStep(0.1);
   ui->networkBetaBox->setRange(-qInf(), qInf());
-  ui->networkThetaBox->setValue(1.0);
+  ui->networkThetaBox->setValue(0.0);
   ui->networkThetaBox->setSingleStep(0.1);
   ui->networkThetaBox->setRange(-qInf(), qInf());
   ui->networkEtaBox->setValue(1.0);
@@ -58,6 +58,8 @@ PerceptronWindow::PerceptronWindow(QWidget* parent)
   ui->networkIterationsBox->setValue(99);
   ui->networkIterationsBox->setSingleStep(1);
   ui->networkIterationsBox->setRange(1, INT_MAX);
+
+  disableNetwork();
 }
 
 PerceptronWindow::~PerceptronWindow() {
@@ -159,7 +161,7 @@ void PerceptronWindow::on_functionBox_currentTextChanged(const QString&) {
     ui->trainButton->setEnabled(true);
   }
   this->sigmoidChart->removeAllSeries();
-  QtCharts::QLineSeries* series = new QtCharts::QLineSeries();
+  auto* series = new QtCharts::QLineSeries();
   double theta = ui->thetaBox->value();
   std::vector<double> xvals(sigmoidPlotPoints);
   std::generate(
@@ -228,12 +230,14 @@ void PerceptronWindow::on_networkInputAddRowButton_clicked() {
   int rows = ui->networkInputTable->rowCount();
   ui->networkInputTable->insertRow(rows);
   ui->networkInputTable->setCellWidget(rows, 0, createInputCell());
+  disableNetwork();
 }
 
 void PerceptronWindow::on_networkInputRemoveRowButton_clicked() {
   int rows = ui->networkInputTable->rowCount() - 1;
   delete ui->networkInputTable->takeItem(rows, 0);
   ui->networkInputTable->removeRow(rows);
+  disableNetwork();
 }
 
 std::vector<double> PerceptronWindow::getNetworkInputVector() {
@@ -253,12 +257,19 @@ void PerceptronWindow::on_networkOutputAddRowButton_clicked() {
   int rows = ui->networkOutputTable->rowCount();
   ui->networkOutputTable->insertRow(rows);
   ui->networkOutputTable->setCellWidget(rows, 0, createInputCell());
+  disableNetwork();
+}
+
+void PerceptronWindow::disableNetwork() {
+  ui->networkCalculateButton->setDisabled(true);
+  ui->networkTrainButton->setDisabled(true);
 }
 
 void PerceptronWindow::on_networkOutputRemoveRowButton_clicked() {
   int rows = ui->networkOutputTable->rowCount() - 1;
   delete ui->networkOutputTable->takeItem(rows, 0);
   ui->networkOutputTable->removeRow(rows);
+  disableNetwork();
 }
 
 std::vector<double> PerceptronWindow::getNetworkOutputVector() {
@@ -274,6 +285,77 @@ std::vector<double> PerceptronWindow::getNetworkOutputVector() {
   return outputs;
 }
 
-void PerceptronWindow::on_networkTrainButton_clicked() {}
+void PerceptronWindow::on_networkTrainButton_clicked() {
+  auto inputs = getNetworkInputVector();
+  auto outputs = getNetworkOutputVector();
+  auto eta = ui->networkEtaBox->value();
+  auto iterations = static_cast<size_t>(ui->networkIterationsBox->value());
+  auto epsilon = ui->networkEpsilonBox->value();
+  auto result = network->train(inputs, outputs, eta, epsilon, iterations);
+  std::string printable_result = "Network trained, resulting output: ";
+  for (auto& val : result) {
+    printable_result.append(std::to_string(val) + ", ");
+  }
+  printable_result.append(" final errors: ");
+  std::vector<double> err;
+  std::transform(std::begin(outputs), std::end(outputs), std::begin(result),
+                 std::back_inserter(err), std::minus<>());
+  for (auto& val : err) {
+    printable_result.append(std::to_string(val) + ", ");
+  }
+  ui->outputText->append(QString::fromStdString(printable_result));
+}
 
-void PerceptronWindow::on_networkCalculateButton_clicked() {}
+void PerceptronWindow::on_networkCalculateButton_clicked() {
+  auto inputs = getNetworkInputVector();
+  auto result = network->simulate(inputs);
+  std::string printable_result = "Network output: ";
+  for (auto& val : result) {
+    printable_result.append(std::to_string(val) + ", ");
+  }
+  ui->outputText->append(QString::fromStdString(printable_result));
+}
+
+void PerceptronWindow::enableNetwork() {
+  ui->networkCalculateButton->setEnabled(true);
+  ui->networkTrainButton->setEnabled(true);
+}
+
+void PerceptronWindow::on_networkCreateButton_clicked() {
+  NeuralNetwork::NeuralNetworkBuilder builder;
+  auto network_inputs = static_cast<size_t>(ui->networkInputTable->rowCount());
+  auto network_outputs =
+      static_cast<size_t>(ui->networkOutputTable->rowCount());
+  auto intermediate_layers = static_cast<size_t>(ui->networkLayerBox->value());
+  auto intermediate_neurons =
+      static_cast<size_t>(ui->networkNeuronBox->value());
+  this->network = builder.setInputNeurons(network_inputs)
+                      .setOutputNeurons(network_outputs)
+                      .setIntermediateLayers(intermediate_layers)
+                      .setIntermediateNeurons(intermediate_neurons)
+                      .setSigmoid(Neuron::logistic)
+                      .setSigmoidDerivative(Neuron::logisticDerivative)
+                      .build();
+  Neuron::beta = ui->networkBetaBox->value();
+  enableNetwork();
+}
+
+void PerceptronWindow::on_networkLayerBox_valueChanged(int arg1) {
+  (void)arg1;
+  disableNetwork();
+}
+
+void PerceptronWindow::on_networkNeuronBox_valueChanged(int arg1) {
+  (void)arg1;
+  disableNetwork();
+}
+
+void PerceptronWindow::on_networkBetaBox_valueChanged(double arg1) {
+  (void)arg1;
+  disableNetwork();
+}
+
+void PerceptronWindow::on_networkThetaBox_valueChanged(double arg1) {
+  (void)arg1;
+  disableNetwork();
+}
