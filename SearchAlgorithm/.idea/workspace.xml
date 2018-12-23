@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="b5046071-d085-4748-a7c3-98087e86ea97" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../Perceptron/Perceptron.pro.user" beforeDir="false" afterPath="$PROJECT_DIR$/../Perceptron/Perceptron.pro.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pl/p/lodz/aifundamentals/searchalgorithm/CanMis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pl/p/lodz/aifundamentals/searchalgorithm/CanMis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pl/p/lodz/aifundamentals/searchalgorithm/CanMis.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pl/p/lodz/aifundamentals/searchalgorithm/CanMis.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pl/p/lodz/aifundamentals/searchalgorithm/Search.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pl/p/lodz/aifundamentals/searchalgorithm/Search.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pl/p/lodz/aifundamentals/searchalgorithm/State.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pl/p/lodz/aifundamentals/searchalgorithm/State.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -13,12 +18,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/pl/p/lodz/aifundamentals/searchalgorithm/CanMis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-637">
-              <caret line="32" column="16" selection-start-line="32" selection-start-column="16" selection-end-line="32" selection-end-column="16" />
+            <state relative-caret-position="731">
+              <caret line="45" column="51" lean-forward="true" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3556#3557#0" expanded="true" />
@@ -77,7 +82,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1057" />
@@ -88,7 +93,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -126,6 +130,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -181,11 +186,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <frame x="-7" y="0" width="974" height="1057" extended-state="0" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
       <window_info id="Designer" order="1" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.19669509" />
+      <window_info content_ui="combo" id="Project" order="2" weight="0.39824945" />
       <window_info id="Structure" order="3" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug with VisualVM" order="0" />
       <window_info anchor="bottom" id="SonarLint" order="1" />
@@ -195,12 +200,12 @@
       <window_info anchor="bottom" id="Run with VisualVM" order="5" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" />
-      <window_info anchor="bottom" id="Run" order="8" weight="0.32935324" />
+      <window_info anchor="bottom" id="Run" order="8" weight="0.32897604" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="12" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.32901832" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.32897604" />
       <window_info anchor="right" id="Palette&#9;" order="0" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Maven" order="2" weight="0.09541578" />
@@ -243,8 +248,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/pl/p/lodz/aifundamentals/searchalgorithm/CanMis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-637">
-          <caret line="32" column="16" selection-start-line="32" selection-start-column="16" selection-end-line="32" selection-end-column="16" />
+        <state relative-caret-position="731">
+          <caret line="45" column="51" lean-forward="true" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3556#3557#0" expanded="true" />

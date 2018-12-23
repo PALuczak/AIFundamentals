@@ -1,57 +1,46 @@
 package pl.p.lodz.aifundamentals.searchalgorithm;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CanMis {
     public static void main(String[] args) {
-        Search search = new Search(3,3);
-        search.start();
-        // queue uses breadth first search (also called optimal)
-        // stack uses depth first search
-        // parametrize
+        Search search = new Search(3,3, true);
+        State s = search.start();
+        s.printReverseTree();
     }
 }
 
 class Search {
 
-    private ArrayList<State> stateList = new ArrayList<State>();
-    private ArrayList<State> history = new ArrayList<State>();
+    private Deque<State> stateList = new LinkedList<>();
+    private Set<State> history = new HashSet<>();
     final private State desiredState;
+    private boolean FIFO;
 
-    Search(int cannibals, int missionaries) {
+    Search(int cannibals, int missionaries, boolean breadthFirst) {
         stateList.add(new State(cannibals, 0, missionaries, 0, true, null));
         desiredState = new State(0, cannibals, 0, missionaries, false, null);
+        FIFO = breadthFirst;
     }
 
     Search() {
-        this(3,3);
+        this(3,3, true);
     }
 
-    void start() {
+    State start() {
         State s;
         while (true) {
             if (stateList.isEmpty())
                 throw new IllegalStateException("The problem has no solution");
             s = selectState();
             if (solutionFound(s)) {
-                printReverseTree(s);
-                break;
+                return s;
             }
             ArrayList<State> candidates = expandState(s);
             ArrayList<State> validStates = filterStates(candidates);
             updateStateList(validStates);
         }
-    }
-
-    private void printReverseTree(State s) {
-        State node = s;
-        while(node.parent != null){
-            System.out.println(node);
-            node = node.parent;
-        }
-        System.out.println(node);
     }
 
     private ArrayList<State> expandState(State s) {
@@ -113,7 +102,11 @@ class Search {
     }
 
     private State selectState() {
-        State state = stateList.remove(0);
+        State state;
+        if (FIFO) // breadth first
+            state = stateList.removeFirst();
+        else // depth first
+            state = stateList.removeLast();
         history.add(state);
         return state;
     }
@@ -134,6 +127,15 @@ class State {
         MR = mr;
         boatOnLeft = left;
         parent = parentNode;
+    }
+
+    public void printReverseTree() {
+        State node = this;
+        while(node.parent != null){
+            System.out.println(node);
+            node = node.parent;
+        }
+        System.out.println(node);
     }
 
     @Override
