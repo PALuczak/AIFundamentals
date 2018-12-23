@@ -3,11 +3,38 @@ package pl.p.lodz.aifundamentals.searchalgorithm;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.cli.*;
+
 public class CanMis {
     public static void main(String[] args) {
-        Search search = new Search(3,3, true);
-        State s = search.start();
-        s.printReverseTree();
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("c", "cannibals", true, "Number of cannibals");
+        options.addOption("m", "missionaries", true, "Number of missionaries");
+        options.addOption("d", "depthFirst", false, "Switch to depth first search");
+        options.addOption("h", "help", false, "Print help");
+        HelpFormatter formatter = new HelpFormatter();
+
+        try {
+            CommandLine commandLine = parser.parse(options, args);
+            if(commandLine.hasOption("h")) {
+                System.out.println("Search algorithm - Piotr Łuczak - 221481");
+                formatter.printHelp("searchalgoritm", options);
+                return;
+            }
+
+            int initCannibals = Integer.valueOf(commandLine.getOptionValue("c", "3"));
+            int initMissionaries = Integer.valueOf(commandLine.getOptionValue("m", "3"));
+            boolean initBreadthFirst = !commandLine.hasOption("d");
+
+            Search search = new Search(initCannibals,initMissionaries, initBreadthFirst);
+            search.start().printReverseTree();
+        } catch (ParseException e) {
+            System.out.println("Wrong commandline arguments supplied");
+            formatter.printHelp("searchalgoritm", options);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 
