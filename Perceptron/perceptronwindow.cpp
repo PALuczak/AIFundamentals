@@ -19,28 +19,28 @@ PerceptronWindow::PerceptronWindow(QWidget* parent)
   ui->functionBox->addItems(this->perceptronFunctions.keys());
   ui->functionBox->setCurrentIndex(1);
   ui->thetaBox->setValue(1.0);
-  ui->thetaBox->setSingleStep(0.1);
+  ui->thetaBox->setSingleStep(0.01);
   ui->thetaBox->setRange(-qInf(), qInf());
   ui->betaBox->setValue(1.0);
-  ui->betaBox->setSingleStep(0.1);
+  ui->betaBox->setSingleStep(0.01);
   ui->betaBox->setRange(-qInf(), qInf());
   ui->expectedBox->setValue(1.0);
   ui->expectedBox->setSingleStep(0.1);
   ui->expectedBox->setRange(-1, 1);
-  ui->learningRateBox->setValue(1);
-  ui->learningRateBox->setSingleStep(0.1);
+  ui->learningRateBox->setValue(0.5);
+  ui->learningRateBox->setSingleStep(0.01);
   ui->learningRateBox->setRange(-qInf(), qInf());
   ui->maxIterBox->setValue(99);
   ui->maxIterBox->setSingleStep(1);
   ui->maxIterBox->setRange(1, INT_MAX);
-  ui->epsilonBox->setValue(0.1);
-  ui->epsilonBox->setSingleStep(0.01);
+  ui->epsilonBox->setValue(0.01);
+  ui->epsilonBox->setSingleStep(0.001);
   ui->epsilonBox->setRange(0, qInf());
 
-  ui->networkLayerBox->setValue(0);
+  ui->networkLayerBox->setValue(3);
   ui->networkLayerBox->setSingleStep(1);
   ui->networkLayerBox->setRange(0, INT_MAX);
-  ui->networkNeuronBox->setValue(1);
+  ui->networkNeuronBox->setValue(2);
   ui->networkNeuronBox->setSingleStep(1);
   ui->networkNeuronBox->setRange(1, INT_MAX);
   ui->networkBetaBox->setValue(1.0);
@@ -49,11 +49,11 @@ PerceptronWindow::PerceptronWindow(QWidget* parent)
   ui->networkThetaBox->setValue(0.0);
   ui->networkThetaBox->setSingleStep(0.1);
   ui->networkThetaBox->setRange(-qInf(), qInf());
-  ui->networkEtaBox->setValue(1.0);
-  ui->networkEtaBox->setSingleStep(0.1);
+  ui->networkEtaBox->setValue(0.01);
+  ui->networkEtaBox->setSingleStep(0.001);
   ui->networkEtaBox->setRange(-qInf(), qInf());
-  ui->networkEpsilonBox->setValue(0.1);
-  ui->networkEpsilonBox->setSingleStep(0.01);
+  ui->networkEpsilonBox->setValue(0.001);
+  ui->networkEpsilonBox->setSingleStep(0.001);
   ui->networkEpsilonBox->setRange(-qInf(), qInf());
   ui->networkIterationsBox->setValue(99);
   ui->networkIterationsBox->setSingleStep(1);
@@ -182,7 +182,7 @@ void PerceptronWindow::on_thetaBox_valueChanged(double) {
 
 void PerceptronWindow::addTrainingPoint(double value) {
   ui->outputText->append(
-      QString("Error after iteration: %1").arg(QString::number(value)));
+              QString("Error after iteration: %1").arg(QString::number(value)));
 }
 
 void PerceptronWindow::on_trainButton_clicked() {
@@ -226,94 +226,33 @@ void PerceptronWindow::on_trainButton_clicked() {
   }
 }
 
-void PerceptronWindow::on_networkInputAddRowButton_clicked() {
-  int rows = ui->networkInputTable->rowCount();
-  ui->networkInputTable->insertRow(rows);
-  ui->networkInputTable->setCellWidget(rows, 0, createInputCell());
-  disableNetwork();
-}
-
-void PerceptronWindow::on_networkInputRemoveRowButton_clicked() {
-  int rows = ui->networkInputTable->rowCount() - 1;
-  delete ui->networkInputTable->takeItem(rows, 0);
-  ui->networkInputTable->removeRow(rows);
-  disableNetwork();
-}
-
-std::vector<double> PerceptronWindow::getNetworkInputVector() {
-  int rows = ui->networkInputTable->rowCount();
-  std::vector<double> inputs;
-  inputs.reserve(static_cast<size_t>(rows + 1));
-  // QTableWidget does not allow for proper range based access
-  for (auto i = 0; i < rows; ++i) {
-    inputs.push_back(
-        dynamic_cast<QDoubleSpinBox*>(ui->networkInputTable->cellWidget(i, 0))
-            ->value());
-  }
-  return inputs;
-}
-
-void PerceptronWindow::on_networkOutputAddRowButton_clicked() {
-  int rows = ui->networkOutputTable->rowCount();
-  ui->networkOutputTable->insertRow(rows);
-  ui->networkOutputTable->setCellWidget(rows, 0, createInputCell());
-  disableNetwork();
-}
-
-void PerceptronWindow::disableNetwork() {
-  ui->networkCalculateButton->setDisabled(true);
-  ui->networkTrainButton->setDisabled(true);
-}
-
-void PerceptronWindow::on_networkOutputRemoveRowButton_clicked() {
-  int rows = ui->networkOutputTable->rowCount() - 1;
-  delete ui->networkOutputTable->takeItem(rows, 0);
-  ui->networkOutputTable->removeRow(rows);
-  disableNetwork();
-}
-
-std::vector<double> PerceptronWindow::getNetworkOutputVector() {
-  int rows = ui->networkOutputTable->rowCount();
-  std::vector<double> outputs;
-  outputs.reserve(static_cast<size_t>(rows + 1));
-  // QTableWidget does not allow for proper range based access
-  for (auto i = 0; i < rows; ++i) {
-    outputs.push_back(
-        dynamic_cast<QDoubleSpinBox*>(ui->networkOutputTable->cellWidget(i, 0))
-            ->value());
-  }
-  return outputs;
-}
+// neural network handling below
 
 void PerceptronWindow::on_networkTrainButton_clicked() {
-  auto inputs = getNetworkInputVector();
-  auto outputs = getNetworkOutputVector();
+  // go through the train set
+  auto inputs = this->inputTrain;
+  auto outputs = this->outputTrain;
   auto eta = ui->networkEtaBox->value();
   auto iterations = static_cast<size_t>(ui->networkIterationsBox->value());
   auto epsilon = ui->networkEpsilonBox->value();
-  auto result = network->train(inputs, outputs, eta, epsilon, iterations);
-  std::string printable_result = "Network trained, resulting output: ";
-  for (auto& val : result) {
-    printable_result.append(std::to_string(val) + ", ");
-  }
-  printable_result.append(" final errors: ");
-  std::vector<double> err;
-  std::transform(std::begin(outputs), std::end(outputs), std::begin(result),
-                 std::back_inserter(err), std::minus<>());
-  for (auto& val : err) {
-    printable_result.append(std::to_string(val) + ", ");
-  }
-  ui->outputText->append(QString::fromStdString(printable_result));
+  network->train(inputs, outputs, eta, epsilon, iterations);
+  ui->outputText->append("Network trained");
 }
 
 void PerceptronWindow::on_networkCalculateButton_clicked() {
-  auto inputs = getNetworkInputVector();
-  auto result = network->simulate(inputs);
-  std::string printable_result = "Network output: ";
-  for (auto& val : result) {
-    printable_result.append(std::to_string(val) + ", ");
+  // go through the test set
+  auto inputs = this->inputTest;
+  auto outputs = this->outputTest;
+  double accuracy = 0.0;
+  for (size_t i = 0; i < inputs.size(); ++i) {
+    auto result = network->test(inputs.at(i), outputs.at(i));
+    accuracy += result;
+//    ui->outputText->append(
+//        QString("Network tested, error for a sample: %1 %").arg(result * 100.0));
   }
-  ui->outputText->append(QString::fromStdString(printable_result));
+  ui->outputText->append(
+      QString("Network tested, average error: %1 %")
+          .arg((accuracy/inputs.size()) * 100.0));
 }
 
 void PerceptronWindow::enableNetwork() {
@@ -321,11 +260,15 @@ void PerceptronWindow::enableNetwork() {
   ui->networkTrainButton->setEnabled(true);
 }
 
+void PerceptronWindow::disableNetwork() {
+  ui->networkCalculateButton->setDisabled(true);
+  ui->networkTrainButton->setDisabled(true);
+}
+
 void PerceptronWindow::on_networkCreateButton_clicked() {
   NeuralNetwork::NeuralNetworkBuilder builder;
-  auto network_inputs = static_cast<size_t>(ui->networkInputTable->rowCount());
-  auto network_outputs =
-      static_cast<size_t>(ui->networkOutputTable->rowCount());
+  auto network_inputs = static_cast<size_t>(ui->networkInputsBox->value());
+  auto network_outputs = static_cast<size_t>(ui->networkClassesBox->value());
   auto intermediate_layers = static_cast<size_t>(ui->networkLayerBox->value());
   auto intermediate_neurons =
       static_cast<size_t>(ui->networkNeuronBox->value());
@@ -337,25 +280,69 @@ void PerceptronWindow::on_networkCreateButton_clicked() {
                       .setSigmoidDerivative(Neuron::logisticDerivative)
                       .build();
   Neuron::beta = ui->networkBetaBox->value();
+
+  // generate set and split
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(0.0, 1000.0 * ui->networkClassesBox->value());
+  std::vector<std::vector<double>> centers;
+  std::generate_n(std::back_inserter(centers), ui->networkClassesBox->value(), [&](){
+      std::vector<double> center;
+      std::generate_n(std::back_inserter(center), ui->networkInputsBox->value(), [&](){
+          return dis(gen);
+      });
+      return center;
+  });
+
+  this->inputData.clear();
+  this->outputData.clear();
+  for (int j = 0; j < ui->networkSamplesBox->value(); ++j){
+      for (size_t i = 0; i < centers.size(); ++i) {
+          std::vector<double> sample;
+          std::for_each(std::begin(centers.at(i)), std::end(centers.at(i)), [&](auto val){
+              std::normal_distribution<> gauss{val, 3.0};
+              sample.push_back(gauss(gen));
+          });
+          this->inputData.push_back(sample);
+
+          std::vector<double> classification;
+          for (size_t j = 0; j < centers.size(); ++j) {
+              if(i==j) classification.push_back(1);
+              else classification.push_back(0);
+          }
+          this->outputData.push_back(classification);
+      }
+  }
+  this->shuffleAndSplitData();
   enableNetwork();
+  ui->outputText->append("Network and sample data created");
 }
 
-void PerceptronWindow::on_networkLayerBox_valueChanged(int arg1) {
-  (void)arg1;
-  disableNetwork();
-}
+void PerceptronWindow::shuffleAndSplitData() {
+    std::vector<size_t> indexes(inputData.size());
+    std::iota(std::begin(indexes), std::end(indexes), 0);
+    std::random_shuffle(std::begin(indexes), std::end(indexes));
 
-void PerceptronWindow::on_networkNeuronBox_valueChanged(int arg1) {
-  (void)arg1;
-  disableNetwork();
-}
+    std::vector<std::vector<double>> oldInputData;
+    std::vector<std::vector<double>> oldOutputData;
+    std::copy(std::begin(inputData), std::end(inputData), std::back_inserter(oldInputData));
+    std::copy(std::begin(outputData), std::end(outputData), std::back_inserter(oldOutputData));
 
-void PerceptronWindow::on_networkBetaBox_valueChanged(double arg1) {
-  (void)arg1;
-  disableNetwork();
-}
+    for (size_t i = 0; i < indexes.size(); ++i) {
+        inputData.at(i) = oldInputData.at(indexes.at(i));
+        outputData.at(i) = oldOutputData.at(indexes.at(i));
+    }
 
-void PerceptronWindow::on_networkThetaBox_valueChanged(double arg1) {
-  (void)arg1;
-  disableNetwork();
+    auto split_offset = static_cast<long long>(std::round(
+                                                   std::distance(std::begin(inputData), std::end(inputData))
+                                                   * ui->networkSplitRatioBox->value()));
+
+    inputTrain.clear();
+    inputTest.clear();
+    outputTrain.clear();
+    outputTest.clear();
+    std::copy(std::begin(inputData), std::begin(inputData) + split_offset, std::back_inserter(inputTrain));
+    std::copy(std::begin(inputData) + split_offset, std::end(inputData), std::back_inserter(inputTest));
+    std::copy(std::begin(outputData), std::begin(outputData) + split_offset, std::back_inserter(outputTrain));
+    std::copy(std::begin(outputData) + split_offset, std::end(outputData), std::back_inserter(outputTest));
 }

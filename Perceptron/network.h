@@ -11,11 +11,12 @@ class NeuralNetworkBuilder;
 class NeuralNetwork {
  public:
   std::vector<double> simulate(std::vector<double> &input);
-  std::vector<double> train(std::vector<double> &input,
-                            std::vector<double> &output, double eta,
+  void train(std::vector<std::vector<double> > &input,
+                            std::vector<std::vector<double> > &output, double eta,
                             double epsilon, size_t max_iterations);
 
- private:
+  double test(std::vector<double> &input, std::vector<double> &output);
+private:
   friend class NeuralNetworkBuilder;
   struct NetworkLayer {
     std::vector<double> neurons;
@@ -45,7 +46,7 @@ class NeuralNetworkBuilder {
   size_t intermediate_neurons;
   size_t input_neurons;
   size_t output_neurons;
-  double theta;
+  double theta {0.0};
   std::function<double(double)> sigmoid;
   std::function<double(double)> sigmoidDerivative;
 };
